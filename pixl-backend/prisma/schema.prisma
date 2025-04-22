@@ -1,0 +1,70 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id             Int             @id @default(autoincrement())
+  email          String          @unique
+  password       String
+  role           Role            @default(USER)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  events         Event[]         
+  attending      EventAttendee[]
+  paymentIntents PaymentIntent[] 
+   resetToken     String?         // Fix indentation here
+  resetTokenExpiry DateTime?
+}
+
+model Event {
+  id             Int             @id @default(autoincrement())
+  title          String
+  description    String
+  date           DateTime
+  location       String
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  attendees      EventAttendee[] @relation("EventToAttendee")
+  userId         Int?
+  user           User?           @relation(fields: [userId], references: [id])
+  paymentIntents PaymentIntent[] @relation("EventToPaymentIntent")
+  price          Float?
+}
+
+model EventAttendee {
+  userId    Int
+  eventId   Int
+  createdAt DateTime @default(now())
+  hasPaid   Boolean  @default(false)
+  
+  @@id([userId, eventId])
+  user      User     @relation(fields: [userId], references: [id])
+  event     Event    @relation("EventToAttendee", fields: [eventId], references: [id], onDelete: Cascade)
+}
+
+model PaymentIntent {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  eventId   Int
+  status    String   // PENDING, COMPLETED, FAILED, etc.
+  paymentId String
+  amount    Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id])
+  event     Event    @relation("EventToPaymentIntent", fields: [eventId], references: [id], onDelete: Cascade)
+}
+
+enum Role {
+  USER
+  ADMIN
+}

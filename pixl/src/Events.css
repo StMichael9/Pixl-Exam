@@ -1,0 +1,707 @@
+.events-container {
+    width: 100%;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #4b0082, #0000cd);
+    padding: 20px;
+    color: white;
+    font-family: 'Poppins', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    overflow-x: hidden;
+}
+
+/* Typography */
+h1 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2.5rem;
+    font-weight: 700;
+    background: linear-gradient(to right, #ff69b4, #9370db);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 10px rgba(255, 105, 180, 0.3);
+    letter-spacing: 1px;
+}
+
+.event-card h3 {
+    margin-top: 0;
+    color: #ff69b4;
+    font-size: 1.5rem;
+}
+
+.welcome-message {
+    font-size: 1rem;
+    color: #e0e0e0;
+    font-weight: 500;
+}
+
+/* Header */
+.events-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 15px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: sticky;
+    top: 0;
+    background: linear-gradient(135deg, rgba(75, 0, 130, 0.95), rgba(0, 0, 205, 0.95));
+    backdrop-filter: blur(10px);
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.events-header h1 {
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Button Base Styles */
+.logout-btn, .cancel-btn, .add-event-btn, .submit-btn, 
+.rsvp-btn, .edit-btn, .delete-btn, .payment-btn {
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+/* Button Variations */
+.logout-btn, .event-interaction .cancel-btn {
+    background: linear-gradient(to right, #f44336, #d32f2f);
+    color: white;
+    box-shadow: 0 4px 10px rgba(244, 67, 54, 0.3);
+}
+
+.add-event-btn, .submit-btn {
+    background: linear-gradient(to right, #ff69b4, #9370db);
+    color: white;
+    box-shadow: 0 6px 20px rgba(255, 105, 180, 0.4);
+}
+
+.rsvp-btn {
+    background: linear-gradient(to right, #4169e1, #9370db);
+    color: white;
+    box-shadow: 0 4px 15px rgba(65, 105, 225, 0.3);
+    padding: 12px 24px;
+    font-size: 1rem;
+    width: 100%;
+    max-width: 200px;
+}
+
+.edit-btn {
+    background: linear-gradient(to right, #4169e1, #6495ed);
+    color: white;
+    box-shadow: 0 4px 10px rgba(65, 105, 225, 0.3);
+}
+
+.delete-btn {
+    background: linear-gradient(to right, #dc143c, #ff4757);
+    color: white;
+    box-shadow: 0 4px 10px rgba(220, 20, 60, 0.3);
+}
+
+.payment-btn {
+    background: linear-gradient(to right, #4CAF50, #2E8B57);
+    color: white;
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+    padding: 12px 24px;
+}
+
+.cancel-btn {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    backdrop-filter: blur(5px);
+}
+
+/* Button Sizes & Specifics */
+.logout-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.add-event-btn {
+    padding: 14px 28px;
+    font-size: 1.1rem;
+    display: block;
+    margin: 0 auto;
+}
+
+.rsvp-btn, .edit-btn, .delete-btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.submit-btn, .cancel-btn {
+    padding: 12px 25px;
+    font-size: 1rem;
+}
+
+/* Button Icons */
+.edit-btn::before {
+    content: "✏️";
+    font-size: 0.9rem;
+}
+
+.delete-btn::before {
+    content: "🗑️";
+    font-size: 0.9rem;
+}
+
+/* Button States */
+.rsvp-btn:hover, .edit-btn:hover, .delete-btn:hover,
+.submit-btn:hover, .cancel-btn:hover, .logout-btn:hover,
+.add-event-btn:hover, .payment-btn:hover {
+    transform: translateY(-3px);
+    filter: brightness(1.1);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.rsvp-btn:active, .edit-btn:active, .delete-btn:active {
+    transform: translateY(-1px);
+    filter: brightness(0.95);
+}
+
+.add-event-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(255, 105, 180, 0.5);
+}
+
+.rsvp-btn.attending, .rsvp-btn.registered, .rsvp-btn.clicked {
+    background: linear-gradient(to right, #32CD32, #00CED1);
+    box-shadow: 0 4px 15px rgba(50, 205, 50, 0.3);
+}
+
+.rsvp-btn.registered, .rsvp-btn.clicked {
+    position: relative;
+    padding-right: 35px;
+}
+
+.rsvp-btn.registered::after, .rsvp-btn.clicked::after {
+    content: "✓";
+    position: absolute;
+    right: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.rsvp-btn.clicked::after {
+    animation: pulse 1.5s infinite;
+}
+
+.delete-btn.confirming {
+    animation: pulse-delete 1.5s infinite;
+    background: linear-gradient(to right, #ff0000, #ff4757);
+}
+
+.rsvp-btn.loading, .edit-btn.loading, .delete-btn.loading {
+    position: relative;
+    color: transparent !important;
+    pointer-events: none;
+}
+
+.rsvp-btn.loading::after, .edit-btn.loading::after, .delete-btn.loading::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top: calc(50% - 10px);
+    left: calc(50% - 10px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.8s linear infinite;
+}
+
+.event-interaction .cancel-btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Event Cards */
+.events-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+    max-width: 1200px;
+    margin: 0 auto;
+    overflow-y: auto;
+    flex: 1;
+    padding-bottom: 30px;
+    scroll-behavior: smooth;
+}
+
+.event-card {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 15px;
+    padding: 25px;
+    transition: all 0.4s ease;
+    height: fit-content;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+    position: relative;
+}
+
+.event-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(to right, #ff69b4, #9370db);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s ease;
+}
+
+.event-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+}
+
+.event-card:hover::before {
+    transform: scaleX(1);
+}
+
+.event-description, .event-details {
+    margin-bottom: 15px;
+}
+
+.event-details p {
+    margin: 5px 0;
+}
+
+.event-details span {
+    font-weight: bold;
+    color: #9370db;
+}
+
+.event-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.event-attendees {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* Registered Event Styling */
+.registered-event {
+    border: 2px solid #4CAF50;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.registered-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.registered-event .event-title {
+    color: #4CAF50;
+}
+
+.registered-event::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 100px;
+    height: 100px;
+    background-color: rgba(76, 175, 80, 0.1);
+    transform: rotate(45deg);
+    z-index: 0;
+}
+
+/* Form Styling */
+.event-form-container {
+    background: rgba(0, 0, 0, 0.4);
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 600px;
+    margin: 0 auto;
+    overflow-y: auto;
+    max-height: 80vh;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.event-form-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #ff69b4;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    box-sizing: border-box;
+    transition: all 0.3s;
+    font-family: 'Poppins', Arial, sans-serif;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #ff69b4;
+    box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+}
+
+.form-group textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+/* Edit Mode Styling */
+.edit-mode .event-card {
+    border: 2px solid #ff69b4;
+    box-shadow: 0 0 25px rgba(255, 105, 180, 0.4);
+    transform: scale(1.02);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.event-form-container.edit-mode {
+    animation: slideInFromTop 0.5s ease;
+    border-left: 4px solid #ff69b4;
+}
+
+.event-form-container.edit-mode h2 {
+    position: relative;
+    display: inline-block;
+}
+
+.event-form-container.edit-mode h2::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(to right, #ff69b4, #9370db);
+    animation: expandWidth 0.6s ease-out forwards;
+}
+
+.event-form-container.edit-mode .form-group input,
+.event-form-container.edit-mode .form-group textarea {
+    border-left: 3px solid #ff69b4;
+    padding-left: 18px;
+}
+
+.event-form-container.edit-mode .submit-btn {
+    background: linear-gradient(to right, #3a5fcd, #9370db);
+    position: relative;
+    overflow: hidden;
+}
+
+.event-form-container.edit-mode .submit-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: 0.5s;
+}
+
+.event-form-container.edit-mode .submit-btn:hover::before {
+    left: 100%;
+}
+
+/* Floating label effect for edit mode */
+.event-form-container.edit-mode .form-group {
+    position: relative;
+}
+
+.event-form-container.edit-mode .form-group label {
+    position: absolute;
+    top: -10px;
+    left: 15px;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 0 8px;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+.event-form-container.edit-mode .form-group input:focus + label,
+.event-form-container.edit-mode .form-group textarea:focus + label {
+    color: #ff69b4;
+    transform: translateY(-5px);
+}
+
+/* Custom scrollbar for modern browsers */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #ff69b4, #9370db);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #ff69b4, #4b0082);
+}
+
+/* Modal Overlay */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Payment Modal */
+.payment-modal {
+    background-color: white;
+    border-radius: 12px;
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    transform: translateY(0);
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.payment-modal h2 {
+    margin-top: 0;
+    color: #333;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.payment-modal p {
+    margin: 15px 0;
+    line-height: 1.6;
+    color: #555;
+}
+
+.payment-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+.payment-btn {
+    background: linear-gradient(to right, #4CAF50, #2E8B57);
+    color: white;
+    padding: 12px 24px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+}
+
+.payment-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+}
+
+/* Success Message */
+.success-message {
+    background-color: rgba(223, 240, 216, 0.9);
+    color: #3c763d;
+    padding: 15px;
+    border-radius: 8px;
+    margin: 15px 0;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(60, 118, 61, 0.2);
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Event Interaction */
+.event-interaction {
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.event-interaction .cancel-btn {
+    background: linear-gradient(to right, #f44336, #d32f2f);
+    color: white;
+    padding: 10px 20px;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.event-interaction .cancel-btn:hover {
+    background: linear-gradient(to right, #d32f2f, #b71c1c);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(244, 67, 54, 0.4);
+}
+
+.event-interaction .cancel-btn:disabled {
+    background: #cccccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Admin Controls */
+.admin-controls {
+    max-width: 800px;
+    margin: 0 auto 30px;
+}
+
+/* Keyframes */
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+@keyframes pulse-delete {
+    0% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 0, 0, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes slideInFromTop {
+    0% {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .events-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .user-controls {
+        margin-top: 10px;
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .events-list {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .events-list {
+        grid-template-columns: 1fr;
+    }
+    
+    .event-actions {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .edit-btn, .delete-btn {
+        width: 100%;
+        text-align: center;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+}
