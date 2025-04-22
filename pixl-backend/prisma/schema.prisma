@@ -4,11 +4,12 @@
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
+  
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql" // or "mysql", "sqlite", etc. depending on your database
+  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -21,7 +22,7 @@ model User {
   events         Event[]         
   attending      EventAttendee[]
   paymentIntents PaymentIntent[] 
-   resetToken     String?         // Fix indentation here
+  resetToken     String?         // Fix indentation here
   resetTokenExpiry DateTime?
 }
 
