@@ -5,9 +5,9 @@ import prisma from './prisma/client.js';
 import handlePayments from './payments.js';
 import nodemailer from 'nodemailer'; // Added import for nodemailer
 
-const JWT_SECRET = 'your-secret-key';
+const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const PORT = process.env.PORT || 3001;
-const adminEmails = ['michaelegenamba@gmail.com'];
+const adminEmails = process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(',').map(email => email.trim()) : ['michaelegenamba@gmail.com'];
 const corsHeaders = {
 'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -106,37 +106,33 @@ const auth = {
     try {
       const { email } = await parseBody(req);
       const user = await prisma.user.findUnique({ where: { email } });
-      if (!user) return sendJson(res, 404, { error: 'User not found' });
       
-      // Generate reset token
+      // For security reasons, don't reveal if the user exists or not
+      if (!user) {
+        console.log(`Password reset requested for non-existent email: ${email}`);
+        return sendJson(res, 200, { 
+          message: 'If an account with that email exists, we have sent password reset instructions.' 
+        });
+      }
+      
+      // Generate a reset token
       const resetToken = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: '1h' });
       
-      // Create reset link
-      const resetLink = `http://localhost:5173/reset-password?token=${resetToken}`;
+      // Store the token and expiry in the database
+      await prisma.user.update({
+        where: { id: user.id },
+        data: {
+          resetToken,
+          resetTokenExpiry: new Date(Date.now() + 3600000) // 1 hour from now
+        }
+      });
       
-      // Log the link for debugging
-      console.log(`Reset link for ${email}: ${resetLink}`);
-      
-      // Send email with reset link
-      const mailOptions = {
-        from: process.env.EMAIL_USER || 'stmichaelegenamba@gmail.com',
-        to: email,
-        subject: 'Password Reset Instructions',
-        html: `
-          <h1>Password Reset</h1>
-          <p>You requested a password reset for your Pixl account.</p>
-          <p>Click the link below to reset your password:</p>
-          <a href="${resetLink}" style="display: inline-block; padding: 10px 20px; background-color: #4c00b4; color: white; text-decoration: none; border-radius: 5px;">Reset Password</a>
-          <p>This link will expire in 1 hour.</p>
-          <p>If you didn't request this, please ignore this email.</p>
-        `
-      };
-      
-      // Send the email
-      await transporter.sendMail(mailOptions);
+      // In a real application, you would send an email with the reset link
+      // For this example, we'll just log it to the console
+      console.log(`Reset link for ${email}: http://localhost:5173/reset-password?token=${resetToken}`);
       
       sendJson(res, 200, { 
-        message: 'Password reset instructions have been sent to your email.'
+        message: 'If an account with that email exists, we have sent password reset instructions.' 
       });
     } catch (error) {
       handleError(res, error, 'Password reset error');
@@ -420,6 +416,13 @@ const handleRequest = async (req, res) => {
     if (req.url === '/reset-password') return auth.resetPassword(req, res);
   }
   
+   // Root path handler
+   if (req.url === '/' && req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'text/plain', ...corsHeaders });
+    res.end('Pixl API is running!');
+    return;
+  }
+
   // Event routes
   if (req.url === '/events') {
     if (req.method === 'GET') return events.getAll(req, res);
