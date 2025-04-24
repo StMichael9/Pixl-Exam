@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
-import Login from './Login';
-import Register from './Register';
+import LoginSignup from './LoginSignup';
+// Remove Register import if it's no longer needed
 import Events from './Events';
 import { API_URL } from './config';
-import BackendWakeup from './components/BackendWakeup';
 
 import Payment from "./Payment";
 import ForgotPassword from './ForgotPassword';
@@ -48,12 +47,12 @@ function App() {
 
   return (
     <>
-      <BackendWakeup />
       <Router>
         <div className="app-container">
           <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/" element={<LoginSignup />} />
+            {/* Remove the separate register route since LoginSignup handles both */}
+            {/* <Route path="/register" element={<Register />} /> */}
             <Route 
               path="/events" 
               element={
