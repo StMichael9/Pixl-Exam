@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import LoginSignup from './LoginSignup';
-// import Events from './Events';
 import Events from './events';
+
 import Payment from "./Payment";
 import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
