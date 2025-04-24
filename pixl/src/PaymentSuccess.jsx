@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './index.css';
+import { API_URL } from './config';
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();

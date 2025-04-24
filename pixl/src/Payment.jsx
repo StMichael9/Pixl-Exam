@@ -4,6 +4,7 @@ import './EventDetails.css';
 import SquarePayment from './SquarePayment';
 import PaymentSuccess from './PaymentSuccess';
 import PaymentFailure from './PaymentFailure';
+import { API_URL } from './config';
 
 // Main Payment component that handles routing between different payment states
 const Payment = () => {

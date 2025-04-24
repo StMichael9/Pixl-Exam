@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './index.css';
+import { API_URL } from './config';
 
 const PaymentFailure = () => {
   const navigate = useNavigate();

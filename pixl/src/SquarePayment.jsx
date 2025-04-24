@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './SquarePayment.css';
+import { API_URL } from './config';
 
 const SquarePayment = () => {
   const [loading, setLoading] = useState(true);
@@ -38,7 +39,7 @@ const SquarePayment = () => {
           return;
         }
         
-        const response = await fetch(`http://localhost:3001/events/${eventId}`, {
+        const response = await fetch(`${API_URL}/events/${eventId}`, {
           headers: {
             'Authorization': `Bearer ${token}`
           }
@@ -133,7 +134,7 @@ const SquarePayment = () => {
       
       // In a real implementation, you would tokenize the card details
       // Here we're using a simplified approach for the demo
-      const response = await fetch(`http://localhost:3001/events/${eventId}/simple-payment`, {
+      const response = await fetch(`${API_URL}/events/${eventId}/simple-payment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

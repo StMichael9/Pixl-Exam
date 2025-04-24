@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import React, { useState, useEffect } from 'react';
 import './Events.css';
+import { API_URL } from './config';
 
 // Event Card Component
 const EventCard = ({ event, isAdmin, isUserAttending, handleRegister, handlePayment, handleEdit, handleDelete, loading, formatDate }) => {

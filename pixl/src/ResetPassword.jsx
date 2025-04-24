@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './LoginSignup.css';
+import { API_URL } from './config';
 
 function ResetPassword() {
   const navigate = useNavigate();

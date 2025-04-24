@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import './App.css';
 import LoginSignup from './LoginSignup';
 import Events from './Events';
+import { API_URL } from './config';
 
 import Payment from "./Payment";
 import ForgotPassword from './ForgotPassword';

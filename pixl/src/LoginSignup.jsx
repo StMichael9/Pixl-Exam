@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_URL } from './config';
+
 const LoginSignup = () => {
     const [isLogin, setIsLogin] = useState("Sign Up");
     const [email, setEmail] = useState("");
@@ -54,8 +56,8 @@ const LoginSignup = () => {
             }
             
             // Send the request to your backend - UPDATED PORT TO 3001
-            console.log(`Sending ${isLogin} request to: http://localhost:3001${endpoint}`);
-            const response = await fetch(`http://localhost:3001${endpoint}`, {
+            console.log(`Sending ${isLogin} request to: ${API_URL}${endpoint}`);
+            const response = await fetch(`${API_URL}${endpoint}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
