@@ -465,13 +465,14 @@ const server = http.createServer(async (req, res) => {
     return;
   }
   
+  // Add CORS headers for all responses
+  Object.keys(corsHeaders).forEach(header => res.setHeader(header, corsHeaders[header]));
+  
   // Route requests to appropriate handlers
   if (req.url.startsWith('/process-payment') || req.url.startsWith('/payment-confirmation/')) {
-    // Add CORS headers for payment routes
-    Object.keys(corsHeaders).forEach(header => res.setHeader(header, corsHeaders[header]));
     await handlePayments(req, res);
   } else {
-    // Handle other routes (CORS is already handled in handleRequest)
+    // Handle other routes
     await handleRequest(req, res);
   }
 });
