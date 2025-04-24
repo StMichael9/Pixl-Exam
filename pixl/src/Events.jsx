@@ -104,14 +104,15 @@ function Events() {
     try {
       const token = localStorage.getItem('token');
       if (!token) return navigate('/');
-      const res = await fetch('http://localhost:3001/events', {
+      const res = await fetch(`${API_URL}/events`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
       if (!res.ok) throw new Error('Failed to fetch events');
       const events = await res.json();
-      console.log('Fetched events:', events); // Add this line to debug
+      console.log('Fetched events:', events);
       updateState({ events, loading: false });
     } catch (err) {
+      console.error('Error fetching events:', err);
       updateState({ error: 'Failed to load events', loading: false });
     }
   };
@@ -127,11 +128,11 @@ function Events() {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    console.log('Submitting form data:', state.eventForm); // Log form data before submission
+    console.log('Submitting form data:', state.eventForm);
     updateState({ loading: true });
     try {
       const token = localStorage.getItem('token');
-      const url = state.editingId ? `http://localhost:3001/events/${state.editingId}` : 'http://localhost:3001/events';
+      const url = state.editingId ? `${API_URL}/events/${state.editingId}` : `${API_URL}/events`;
       const res = await fetch(url, {
         method: state.editingId ? 'PUT' : 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
@@ -159,7 +160,7 @@ function Events() {
     if (!window.confirm('Are you sure you want to delete this event?')) return;
     updateState({ loading: true });
     try {
-      const res = await fetch(`http://localhost:3001/events/${id}`, {
+      const res = await fetch(`${API_URL}/events/${id}`, {
         method: 'DELETE',
         headers: { 'Authorization': `Bearer ${localStorage.getItem('token')}` }
       });
@@ -189,7 +190,7 @@ function Events() {
     setTimeout(() => updateState({ message: null }), 3000);
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:3001/events/${eventId}/rsvp`, {
+      const response = await fetch(`${API_URL}/events/${eventId}/rsvp`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({ attending })
