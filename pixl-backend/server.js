@@ -9,10 +9,9 @@ const JWT_SECRET = 'your-secret-key';
 const PORT = process.env.PORT || 3001;
 const adminEmails = ['michaelegenamba@gmail.com'];
 const corsHeaders = {
-  'Access-Control-Allow-Origin': process.env.FRONTEND_URL || 'https://your-frontend-url.com',
+'Access-Control-Allow-Origin': 'https://pixl-exam-frontend.onrender.com',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-  'Access-Control-Allow-Credentials': 'true'
 };
 
 // Helper functions
@@ -468,9 +467,11 @@ const server = http.createServer(async (req, res) => {
   
   // Route requests to appropriate handlers
   if (req.url.startsWith('/process-payment') || req.url.startsWith('/payment-confirmation/')) {
+    // Add CORS headers for payment routes
+    Object.keys(corsHeaders).forEach(header => res.setHeader(header, corsHeaders[header]));
     await handlePayments(req, res);
   } else {
-    // Handle other routes
+    // Handle other routes (CORS is already handled in handleRequest)
     await handleRequest(req, res);
   }
 });
