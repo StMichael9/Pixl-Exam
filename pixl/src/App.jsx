@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import LoginSignup from './LoginSignup';
-import Events from './events';
+import Events from './Events';
 
 import Payment from "./Payment";
 import ForgotPassword from './ForgotPassword';
