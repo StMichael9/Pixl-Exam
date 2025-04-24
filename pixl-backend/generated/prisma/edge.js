@@ -83,6 +83,9 @@ Prisma.NullTypes = {
  * Enums
  */
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
+  ReadUncommitted: 'ReadUncommitted',
+  ReadCommitted: 'ReadCommitted',
+  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 });
 
@@ -130,6 +133,11 @@ exports.Prisma.PaymentIntentScalarFieldEnum = {
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
 };
 
 exports.Prisma.NullsOrder = {
@@ -185,18 +193,17 @@ const config = {
   "datasourceNames": [
     "db"
   ],
-  "activeProvider": "sqlite",
-  "postinstall": false,
+  "activeProvider": "postgresql",
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": null
+        "value": "postgresql://pix_db_user:z0GvQP0bp7i0DFnBwCIFqkNHP1PjjJOF@dpg-d043r1ruibrs73anq1ng-a.oregon-postgres.render.com/pix_db"
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"sqlite\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id               Int             @id @default(autoincrement())\n  email            String          @unique\n  password         String\n  role             Role            @default(USER)\n  createdAt        DateTime        @default(now())\n  updatedAt        DateTime        @updatedAt\n  events           Event[]\n  attending        EventAttendee[]\n  paymentIntents   PaymentIntent[]\n  resetToken       String? // Fix indentation here\n  resetTokenExpiry DateTime?\n}\n\nmodel Event {\n  id             Int             @id @default(autoincrement())\n  title          String\n  description    String\n  date           DateTime\n  location       String\n  createdAt      DateTime        @default(now())\n  updatedAt      DateTime        @updatedAt\n  attendees      EventAttendee[] @relation(\"EventToAttendee\")\n  userId         Int?\n  user           User?           @relation(fields: [userId], references: [id])\n  paymentIntents PaymentIntent[] @relation(\"EventToPaymentIntent\")\n  price          Float?\n}\n\nmodel EventAttendee {\n  userId    Int\n  eventId   Int\n  createdAt DateTime @default(now())\n  hasPaid   Boolean  @default(false)\n  user      User     @relation(fields: [userId], references: [id])\n  event     Event    @relation(\"EventToAttendee\", fields: [eventId], references: [id], onDelete: Cascade)\n\n  @@id([userId, eventId])\n}\n\nmodel PaymentIntent {\n  id        Int      @id @default(autoincrement())\n  userId    Int\n  eventId   Int\n  status    String // PENDING, COMPLETED, FAILED, etc.\n  paymentId String\n  amount    Float\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  user      User     @relation(fields: [userId], references: [id])\n  event     Event    @relation(\"EventToPaymentIntent\", fields: [eventId], references: [id], onDelete: Cascade)\n}\n\nenum Role {\n  USER\n  ADMIN\n}\n",
-  "inlineSchemaHash": "c3ae5c1463bb91d1ceb348d8c3d1353cdd5bb5a0237940277cabe14320a84278",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\" // or \"mysql\", \"sqlite\", etc. depending on your database\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  id               Int             @id @default(autoincrement())\n  email            String          @unique\n  password         String\n  role             Role            @default(USER)\n  createdAt        DateTime        @default(now())\n  updatedAt        DateTime        @updatedAt\n  events           Event[]\n  attending        EventAttendee[]\n  paymentIntents   PaymentIntent[]\n  resetToken       String? // Fix indentation here\n  resetTokenExpiry DateTime?\n}\n\nmodel Event {\n  id             Int             @id @default(autoincrement())\n  title          String\n  description    String\n  date           DateTime\n  location       String\n  createdAt      DateTime        @default(now())\n  updatedAt      DateTime        @updatedAt\n  attendees      EventAttendee[] @relation(\"EventToAttendee\")\n  userId         Int?\n  user           User?           @relation(fields: [userId], references: [id])\n  paymentIntents PaymentIntent[] @relation(\"EventToPaymentIntent\")\n  price          Float?\n}\n\nmodel EventAttendee {\n  userId    Int\n  eventId   Int\n  createdAt DateTime @default(now())\n  hasPaid   Boolean  @default(false)\n  user      User     @relation(fields: [userId], references: [id])\n  event     Event    @relation(\"EventToAttendee\", fields: [eventId], references: [id], onDelete: Cascade)\n\n  @@id([userId, eventId])\n}\n\nmodel PaymentIntent {\n  id        Int      @id @default(autoincrement())\n  userId    Int\n  eventId   Int\n  status    String // PENDING, COMPLETED, FAILED, etc.\n  paymentId String\n  amount    Float\n  createdAt DateTime @default(now())\n  updatedAt DateTime @updatedAt\n  user      User     @relation(fields: [userId], references: [id])\n  event     Event    @relation(\"EventToPaymentIntent\", fields: [eventId], references: [id], onDelete: Cascade)\n}\n\nenum Role {\n  USER\n  ADMIN\n}\n",
+  "inlineSchemaHash": "8d767fcde606b9099e2a0d019b0d237b6ab5b9aa327f88599bd1db7983eaa8d4",
   "copyEngine": true
 }
 config.dirname = '/'

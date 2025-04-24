@@ -5,9 +5,9 @@ import prisma from './prisma/client.js';
 import handlePayments from './payments.js';
 import nodemailer from 'nodemailer'; // Added import for nodemailer
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const JWT_SECRET = 'your-secret-key';
 const PORT = process.env.PORT || 3001;
-const adminEmails = process.env.ADMIN_EMAILS ? process.env.ADMIN_EMAILS.split(',').map(email => email.trim()) : ['michaelegenamba@gmail.com'];
+const adminEmails = ['michaelegenamba@gmail.com'];
 const corsHeaders = {
 'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -459,9 +459,16 @@ const handleRequest = async (req, res) => {
 
 const server = http.createServer(async (req, res) => {
   // Set CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin;
+  if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  } else {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+  }
+  
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
   
   // Handle preflight requests
   if (req.method === 'OPTIONS') {

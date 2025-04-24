@@ -23,7 +23,7 @@ model User {
   attending      EventAttendee[]
   paymentIntents PaymentIntent[] 
   resetToken     String?         // Fix indentation here
-  resetTokenExpiry DateTime?
+z  resetTokenExpiry DateTime?
 }
 
 model Event {
