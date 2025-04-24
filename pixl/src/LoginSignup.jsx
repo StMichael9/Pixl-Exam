@@ -55,9 +55,11 @@ const LoginSignup = () => {
                 console.log("Registration attempt with:", { email, password: "***" });
             }
             
-            // Send the request to your backend - UPDATED PORT TO 3001
-            console.log(`Sending ${isLogin} request to: ${API_URL}${endpoint}`);
-            const response = await fetch(`${API_URL}${endpoint}`, {
+            // Construct the full URL - this is the key change
+            const fullUrl = `${API_URL}${endpoint}`;
+            console.log(`Sending ${isLogin} request to: ${fullUrl}`);
+            
+            const response = await fetch(fullUrl, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -68,9 +70,7 @@ const LoginSignup = () => {
             
             console.log("Response status:", response.status);
             const data = await response.json();
-            console.log("Response data structure:", JSON.stringify(data, null, 2));
-            console.log("Token:", data.token);
-            console.log("User:", data.user);
+            console.log("Response data:", data);
             
             if (!response.ok) {
                 throw new Error(data.error || 'Something went wrong');
