@@ -9,9 +9,10 @@ const JWT_SECRET = 'your-secret-key';
 const PORT = process.env.PORT || 3001;
 const adminEmails = ['michaelegenamba@gmail.com'];
 const corsHeaders = {
-'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Origin': process.env.FRONTEND_URL || 'https://your-frontend-url.com',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  'Access-Control-Allow-Credentials': 'true'
 };
 
 // Helper functions
@@ -458,21 +459,9 @@ const handleRequest = async (req, res) => {
 };
 
 const server = http.createServer(async (req, res) => {
-  // Set CORS headers
-  const origin = req.headers.origin;
-  if (process.env.FRONTEND_URL && origin === process.env.FRONTEND_URL) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  } else {
-    res.setHeader('Access-Control-Allow-Origin', '*');
-  }
-  
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
-    res.writeHead(204);
+    res.writeHead(204, corsHeaders);
     res.end();
     return;
   }
