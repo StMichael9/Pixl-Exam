@@ -9,9 +9,10 @@ const JWT_SECRET = 'your-secret-key';
 const PORT = process.env.PORT || 3001;
 const adminEmails = ['michaelegenamba@gmail.com', 'stmichaelegenamba@gmail.com'];
 const corsHeaders = {
-'Access-Control-Allow-Origin': 'https://pixl-exam.vercel.app',
+  'Access-Control-Allow-Origin': 'https://pixl-exam.vercel.app',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
 };
 
 // Helper functions
@@ -81,11 +82,17 @@ const auth = {
       const user = await prisma.user.findUnique({ where: { email } });
       
       if (user && await bcrypt.compare(password, user.password)) {
-        const shouldBeAdmin = adminEmails.includes(email) || user.role === 'ADMIN';
+        // Make email comparison case-insensitive
+        const shouldBeAdmin = adminEmails.some(adminEmail => 
+          adminEmail.toLowerCase() === email.toLowerCase()
+        ) || user.role === 'ADMIN';
         
         if (shouldBeAdmin && user.role !== 'ADMIN') {
           await prisma.user.update({ where: { id: user.id }, data: { role: 'ADMIN' } });
         }
+        
+        // Add some debugging
+        console.log(`User ${email} login - Role: ${shouldBeAdmin ? 'ADMIN' : user.role}`);
         
         sendJson(res, 200, { 
           token: jwt.sign(
@@ -100,6 +107,7 @@ const auth = {
     } catch (error) {
       handleError(res, error, 'Login error');
     }
+  }
   },
   
   forgotPassword: async (req, res) => {
@@ -107,7 +115,7 @@ const auth = {
       const { email } = await parseBody(req);
       const user = await prisma.user.findUnique({ where: { email } });
       
-      // For security reasons, don't reveal if the user exists or not
+      // For security reasons, don't reveal if the user exists or not 
       if (!user) {
         console.log(`Password reset requested for non-existent email: ${email}`);
         return sendJson(res, 200, { 
