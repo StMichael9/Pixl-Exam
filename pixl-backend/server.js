@@ -7,7 +7,7 @@ import nodemailer from 'nodemailer'; // Added import for nodemailer
 
 const JWT_SECRET = 'your-secret-key';
 const PORT = process.env.PORT || 3001;
-const adminEmails = ['michaelegenamba@gmail.com', 'stmichaelEgenamba@gmail.com'];
+const adminEmails = ['michaelegenamba@gmail.com', 'stmichaelegenamba@gmail.com'];
 const corsHeaders = {
 'Access-Control-Allow-Origin': 'https://pixl-exam.vercel.app',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
