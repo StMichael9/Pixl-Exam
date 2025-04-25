@@ -9,10 +9,9 @@ const JWT_SECRET = 'your-secret-key';
 const PORT = process.env.PORT || 3001;
 const adminEmails = ['michaelegenamba@gmail.com', 'stmichaelegenamba@gmail.com'];
 const corsHeaders = {
-  'Access-Control-Allow-Origin': 'https://pixl-exam.vercel.app',
+'Access-Control-Allow-Origin': 'https://pixl-exam.vercel.app',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-};
 };
 
 // Helper functions
@@ -99,7 +98,11 @@ const auth = {
             { id: user.id, email: user.email, role: shouldBeAdmin ? 'ADMIN' : user.role },
             JWT_SECRET, { expiresIn: '24h' }
           ),
-          user: { email: user.email, role: shouldBeAdmin ? 'ADMIN' : user.role }
+          user: { 
+            id: user.id,  // Include the user ID in the response
+            email: user.email, 
+            role: shouldBeAdmin ? 'ADMIN' : user.role 
+          }
         });
       } else {
         sendJson(res, 400, { error: 'Invalid credentials' });
@@ -107,6 +110,7 @@ const auth = {
     } catch (error) {
       handleError(res, error, 'Login error');
     }
+  }
   }
   },
   
