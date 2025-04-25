@@ -10,6 +10,7 @@ function ResetPassword() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [message, setMessage] = useState(''); // Added missing state
   const [loading, setLoading] = useState(false);
   const [resetComplete, setResetComplete] = useState(false);
   const [tokenValid, setTokenValid] = useState(false);
@@ -44,7 +45,8 @@ function ResetPassword() {
     setError('');
     
     try {
-      const response = await fetch('http://localhost:3001/reset-password', {
+      // Use API_URL from config instead of hardcoded localhost
+      const response = await fetch(`${API_URL}/reset-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -105,20 +107,15 @@ function ResetPassword() {
         </form>
       ) : null}
       
-      <div className="forgot-password">
-        <span onClick={() => navigate('/')}>Back to Login</span>
-      </div>
-      
-      {!resetComplete && !tokenValid && (
-        <div className="sumbit-container">
-          <div 
-            className="sumbit gray"
-            onClick={() => navigate('/')}
-          >
-            Back to Login
-          </div>
+      {/* Simplified navigation back to login */}
+      <div className="sumbit-container">
+        <div 
+          className="sumbit gray"
+          onClick={() => navigate('/')}
+        >
+          Back to Login
         </div>
-      )}
+      </div>
     </div>
   );
 }
