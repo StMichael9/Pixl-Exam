@@ -7,7 +7,7 @@ import nodemailer from 'nodemailer'; // Added import for nodemailer
 
 const JWT_SECRET = 'your-secret-key';
 const PORT = process.env.PORT || 3001;
-const adminEmails = ['michaelegenamba@gmail.com, stmichaelEgenamba@gmail.com'];
+const adminEmails = ['michaelegenamba@gmail.com', 'stmichaelEgenamba@gmail.com'];
 const corsHeaders = {
 'Access-Control-Allow-Origin': 'https://pixl-exam.vercel.app',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
@@ -127,10 +127,10 @@ const auth = {
         }
       });
       
-      // Create reset link - use your Vercel frontend URL
-      const resetLink = `https://pixl-exam.vercel.app/reset-password?token=${resetToken}`;
+      // Create the reset URL - use your actual frontend URL
+      const resetUrl = `https://pixl-exam.vercel.app/reset-password?token=${resetToken}`;
       
-      // Send the email with the reset link
+      // Send the email
       const mailOptions = {
         from: 'michaelegenamba@gmail.com',
         to: email,
@@ -139,20 +139,20 @@ const auth = {
           <h1>Password Reset</h1>
           <p>You requested a password reset for your Pixl account.</p>
           <p>Click the link below to reset your password:</p>
-          <a href="${resetLink}">Reset Password</a>
+          <a href="${resetUrl}">Reset Password</a>
           <p>This link will expire in 1 hour.</p>
           <p>If you didn't request this, please ignore this email.</p>
         `
       };
       
+      // Send the email and wait for it to complete
       await transporter.sendMail(mailOptions);
-      console.log(`Reset link sent to ${email}: ${resetLink}`);
       
       sendJson(res, 200, { 
         message: 'If an account with that email exists, we have sent password reset instructions.' 
       });
     } catch (error) {
-      console.error('Error sending password reset email:', error);
+      console.error('Email sending error:', error);
       handleError(res, error, 'Password reset error');
     }
   },
