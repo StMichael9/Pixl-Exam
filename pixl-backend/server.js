@@ -9,10 +9,19 @@ const JWT_SECRET = 'your-secret-key';
 const PORT = process.env.PORT || 3001;
 const adminEmails = ['michaelegenamba@gmail.com'];
 const corsHeaders = {
-'Access-Control-Allow-Origin': 'https://pixl-exam-frontend.onrender.com',
+  'Access-Control-Allow-Origin': 'https://pixl-exam.vercel.app',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
+
+// Create a transporter
+const transporter = nodemailer.createTransport({
+  service: 'gmail',  // Using Gmail service
+  auth: {
+    user: 'michaelegenamba@gmail.com',     // Your Gmail address
+    pass: 'zisp nbdt llle yjec'              // Your app password
+  }
+});
 
 // Helper functions
 const parseBody = req => new Promise((resolve, reject) => {
@@ -45,14 +54,32 @@ const authenticateToken = (req, res, callback) => {
   });
 };
 
-// Create a transporter
-const transporter = nodemailer.createTransport({
-  service: 'gmail',  // Using Gmail service
-  auth: {
-    user: 'michaelegenamba@gmail.com',     // Your Gmail address
-    pass: 'zisp nbdt llle yjec'              // Your app password
+const sendResetEmail = async (email, resetToken) => {
+  try {
+    const resetLink = `https://pixl-exam.vercel.app/reset-password?token=${resetToken}`;
+    
+    const mailOptions = {
+      from: 'michaelegenamba@gmail.com',
+      to: email,
+      subject: 'Password Reset for Pixl',
+      html: `
+        <h1>Password Reset</h1>
+        <p>You requested a password reset for your Pixl account.</p>
+        <p>Click the link below to reset your password:</p>
+        <a href="${resetLink}">${resetLink}</a>
+        <p>This link will expire in 1 hour.</p>
+        <p>If you didn't request this, please ignore this email.</p>
+      `
+    };
+    
+    const info = await transporter.sendMail(mailOptions);
+    console.log('Email sent:', info.response);
+    return true;
+  } catch (error) {
+    console.error('Error sending email:', error);
+    return false;
   }
-});
+};
 
 // Auth handlers
 const auth = {
@@ -92,7 +119,7 @@ const auth = {
             { id: user.id, email: user.email, role: shouldBeAdmin ? 'ADMIN' : user.role },
             JWT_SECRET, { expiresIn: '24h' }
           ),
-          user: { email: user.email, role: shouldBeAdmin ? 'ADMIN' : user.role }
+          user: { id: user.id, email: user.email, role: shouldBeAdmin ? 'ADMIN' : user.role }
         });
       } else {
         sendJson(res, 400, { error: 'Invalid credentials' });
@@ -127,9 +154,8 @@ const auth = {
         }
       });
       
-      // In a real application, you would send an email with the reset link
-      // For this example, we'll just log it to the console
-      console.log(`Reset link for ${email}: http://localhost:5173/reset-password?token=${resetToken}`);
+      // Send reset email
+      await sendResetEmail(email, resetToken);
       
       sendJson(res, 200, { 
         message: 'If an account with that email exists, we have sent password reset instructions.' 
@@ -458,15 +484,17 @@ const handleRequest = async (req, res) => {
 };
 
 const server = http.createServer(async (req, res) => {
+  // Set CORS headers
+  res.setHeader('Access-Control-Allow-Origin', 'https://pixl-exam.vercel.app');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  
   // Handle preflight requests
   if (req.method === 'OPTIONS') {
-    res.writeHead(204, corsHeaders);
+    res.writeHead(204);
     res.end();
     return;
   }
-  
-  // Add CORS headers for all responses
-  Object.keys(corsHeaders).forEach(header => res.setHeader(header, corsHeaders[header]));
   
   // Route requests to appropriate handlers
   if (req.url.startsWith('/process-payment') || req.url.startsWith('/payment-confirmation/')) {
