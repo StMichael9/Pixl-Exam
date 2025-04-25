@@ -79,9 +79,20 @@ const LoginSignup = () => {
             // If login was successful, store the token
             if (isLogin === "Login" && data.token) {
                 console.log("Login successful, storing token");
+                console.log("Full user data:", data.user); // Debug the user data
+                
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('user', data.user.email);
                 localStorage.setItem('userRole', data.user.role);
+                
+                // Store the user ID
+                if (data.user.id) {
+                    localStorage.setItem('userId', data.user.id);
+                    console.log('Stored user ID:', data.user.id);
+                } else {
+                    console.warn('User ID not found in response');
+                }
+                
                 console.log('Stored user role:', data.user.role); // This should show 'ADMIN' or 'USER'
                 
                 // Navigate to events page
