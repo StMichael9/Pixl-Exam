@@ -7,21 +7,12 @@ import nodemailer from 'nodemailer'; // Added import for nodemailer
 
 const JWT_SECRET = 'your-secret-key';
 const PORT = process.env.PORT || 3001;
-const adminEmails = ['michaelegenamba@gmail.com'];
+const adminEmails = ['michaelegenamba@gmail.com, stmichaelEgenamba@gmail.com'];
 const corsHeaders = {
-  'Access-Control-Allow-Origin': 'https://pixl-exam.vercel.app',
+'Access-Control-Allow-Origin': 'https://pixl-exam.vercel.app',
   'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 };
-
-// Create a transporter
-const transporter = nodemailer.createTransport({
-  service: 'gmail',  // Using Gmail service
-  auth: {
-    user: 'michaelegenamba@gmail.com',     // Your Gmail address
-    pass: 'zisp nbdt llle yjec'              // Your app password
-  }
-});
 
 // Helper functions
 const parseBody = req => new Promise((resolve, reject) => {
@@ -54,32 +45,14 @@ const authenticateToken = (req, res, callback) => {
   });
 };
 
-const sendResetEmail = async (email, resetToken) => {
-  try {
-    const resetLink = `https://pixl-exam.vercel.app/reset-password?token=${resetToken}`;
-    
-    const mailOptions = {
-      from: 'michaelegenamba@gmail.com',
-      to: email,
-      subject: 'Password Reset for Pixl',
-      html: `
-        <h1>Password Reset</h1>
-        <p>You requested a password reset for your Pixl account.</p>
-        <p>Click the link below to reset your password:</p>
-        <a href="${resetLink}">${resetLink}</a>
-        <p>This link will expire in 1 hour.</p>
-        <p>If you didn't request this, please ignore this email.</p>
-      `
-    };
-    
-    const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent:', info.response);
-    return true;
-  } catch (error) {
-    console.error('Error sending email:', error);
-    return false;
+// Create a transporter
+const transporter = nodemailer.createTransport({
+  service: 'gmail',  // Using Gmail service
+  auth: {
+    user: 'michaelegenamba@gmail.com',     // Your Gmail address
+    pass: 'zisp nbdt llle yjec'              // Your app password
   }
-};
+});
 
 // Auth handlers
 const auth = {
@@ -119,7 +92,7 @@ const auth = {
             { id: user.id, email: user.email, role: shouldBeAdmin ? 'ADMIN' : user.role },
             JWT_SECRET, { expiresIn: '24h' }
           ),
-          user: { id: user.id, email: user.email, role: shouldBeAdmin ? 'ADMIN' : user.role }
+          user: { email: user.email, role: shouldBeAdmin ? 'ADMIN' : user.role }
         });
       } else {
         sendJson(res, 400, { error: 'Invalid credentials' });
@@ -154,13 +127,32 @@ const auth = {
         }
       });
       
-      // Send reset email
-      await sendResetEmail(email, resetToken);
+      // Create reset link - use your Vercel frontend URL
+      const resetLink = `https://pixl-exam.vercel.app/reset-password?token=${resetToken}`;
+      
+      // Send the email with the reset link
+      const mailOptions = {
+        from: 'michaelegenamba@gmail.com',
+        to: email,
+        subject: 'Password Reset for Pixl',
+        html: `
+          <h1>Password Reset</h1>
+          <p>You requested a password reset for your Pixl account.</p>
+          <p>Click the link below to reset your password:</p>
+          <a href="${resetLink}">Reset Password</a>
+          <p>This link will expire in 1 hour.</p>
+          <p>If you didn't request this, please ignore this email.</p>
+        `
+      };
+      
+      await transporter.sendMail(mailOptions);
+      console.log(`Reset link sent to ${email}: ${resetLink}`);
       
       sendJson(res, 200, { 
         message: 'If an account with that email exists, we have sent password reset instructions.' 
       });
     } catch (error) {
+      console.error('Error sending password reset email:', error);
       handleError(res, error, 'Password reset error');
     }
   },
